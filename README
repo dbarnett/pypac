@@ -17,3 +17,12 @@ About
  * Licenses:    BSD
 
     Dedicated to Sara
+
+How to use it
+-------------
+In one terminal:
+    python pac_server.py
+resize to taste
+
+In a 2nd terminal:
+    python -i pac_client.py
