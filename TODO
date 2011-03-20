@@ -1,0 +1,5 @@
+- add ghosts
+- add power pellets
+- clean up client/server, use GUI thread instead of separate process
+- make objects for board cells, directions, etc., so users can introspect and
+  explore

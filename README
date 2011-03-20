@@ -1,0 +1,19 @@
+pypac
+=====
+
+    "We called him Tortoise because he taught us"
+        --Alice's Adventures in Wonderland
+
+pypac is a fun, interactive Pac-Man environment to help teach basic programming
+in Python. It makes use of the interactive Python prompt, so that learning to
+use it is learning to use Python! There's no gap between pypac and "real Python
+programming".
+
+About
+-----
+
+ * Author:      David Barnett <davidbarnett2@gmail.com>
+ * Home:        http://github.com/dbarnett/pypac
+ * Licenses:    BSD
+
+    Dedicated to Sara
