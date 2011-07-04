@@ -20,9 +20,6 @@ About
 
 How to use it
 -------------
-In one terminal:
-    python pac_server.py
-resize to taste
+Execute
 
-In a 2nd terminal:
-    python -i pac_client.py
+    python -i pypac.py
