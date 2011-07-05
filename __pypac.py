@@ -122,6 +122,15 @@ class PacGame(object):
                         if pac_map[self.pac.y+move_y][self.pac.x+move_x] != 'X':
                             self.pac.x += move_x
                             self.pac.y += move_y
+                            on_pellets, off_pellets = [], []
+                            for p in self.pellets:
+                                if p.x == self.pac.x and p.y == self.pac.y:
+                                    on_pellets.append(p)
+                                    p.sprite.delete()
+                                    self.score += 10
+                                else:
+                                    off_pellets.append(p)
+                            self.pellets[:] = off_pellets
                 self.window.clear()
                 self.wall_sprites_batch.draw()
                 self.pellets_batch.draw()
