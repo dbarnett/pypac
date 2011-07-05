@@ -121,9 +121,11 @@ class PacGame(object):
                         move_x, move_y = self.cur_action.get_move_direction()
                         move_x *= int(round(2*self.cur_action.duration))
                         move_y *= int(round(2*self.cur_action.duration))
-                        if pac_map[self.pac.y+move_y][self.pac.x+move_x] != 'X':
-                            self.pac.x += move_x
-                            self.pac.y += move_y
+                        new_y = (self.pac.y+move_y) % len(pac_map)
+                        new_x = (self.pac.x+move_x) % len(pac_map[new_y])
+                        if pac_map[new_y][new_x] != 'X':
+                            self.pac.x = new_x
+                            self.pac.y = new_y
                             on_pellets, off_pellets = [], []
                             for p in self.pellets:
                                 if p.x == self.pac.x and p.y == self.pac.y:
