@@ -46,6 +46,14 @@ class PacAction(object):
     def start(self):
         self.start_time = time.time()
 
+    def get_move_direction(self):
+        return {
+                'up':    ( 0, -1),
+                'down':  ( 0,  1),
+                'left':  (-1,  0),
+                'right': ( 1,  0)
+            }[self.action]
+
 class PacGame(object):
     def __init__(self):
         self.gui_thread = None
@@ -53,31 +61,39 @@ class PacGame(object):
 
     def _run(self):
         import pyglet
+        class _PacMan(object):
+            pac_img = pyglet.resource.image(os.path.join('assets', 'pac.png'))
+            def __init__(self, x, y):
+                self.x, self.y = x, y
+                self.sprite = pyglet.sprite.Sprite(
+                        self.pac_img,
+                        x=self.x*20, y=(30-self.y)*20)
+            def update(self, dt):
+                self.sprite.x = self.x*20
+                self.sprite.y = (30-self.y)*20
+        class _PacPellet(object):
+            pellet_img = pyglet.resource.image(os.path.join('assets', 'pellet.png'))
+            def __init__(self, x, y, batch):
+                self.x, self.y = x, y
+                self.sprite = pyglet.sprite.Sprite(
+                        self.pellet_img,
+                        batch=batch,
+                        x=self.x*20, y=(30-self.y)*20)
         class _PacGame(object):
             def __init__(self, action_queue):
-                self.map = map(list, pac_map)
                 self.window = pyglet.window.Window(
                         width=28*20, height=31*20)
                 self.cur_action = None
-                self.label = pyglet.text.Label('Get Ready!',
-                        font_name='Arial',
-                        font_size=25,
-                        x=self.window.width//2, y=self.window.height//2,
-                        anchor_x='center', anchor_y='center')
                 self.score_label = pyglet.text.Label('Score: 0',
                         font_size=18,
                         x=0, y=0)
-                pac_img = pyglet.resource.image(os.path.join('assets', 'pac.png'))
-                self.pac_sprite = pyglet.sprite.Sprite(
-                        pac_img,
-                        x=13*20, y=8*20)
+                self.pac = _PacMan(13, 22)
                 wall_img = pyglet.resource.image(os.path.join('assets', 'wall.png'))
                 self.wall_sprites_batch = pyglet.graphics.Batch()
                 self.wall_sprites = []
-                pellet_img = pyglet.resource.image(os.path.join('assets', 'pellet.png'))
                 self.pellets_batch = pyglet.graphics.Batch()
-                self.pellet_sprites = []
-                for y, row in enumerate(self.map):
+                self.pellets = []
+                for y, row in enumerate(pac_map):
                     for x, elem in enumerate(row):
                         if elem == 'X':
                             wall_sprite = pyglet.sprite.Sprite(
@@ -86,11 +102,8 @@ class PacGame(object):
                                     x=x*20, y=(30-y)*20)
                             self.wall_sprites.append(wall_sprite)
                         elif elem == '.':
-                            pellet_sprite = pyglet.sprite.Sprite(
-                                    pellet_img,
-                                    batch=self.pellets_batch,
-                                    x=x*20, y=(30-y)*20)
-                            self.pellet_sprites.append(pellet_sprite)
+                            pellet = _PacPellet(x, y, batch=self.pellets_batch)
+                            self.pellets.append(pellet)
                 self.action_queue = action_queue
                 self.score = 0
 
@@ -98,7 +111,6 @@ class PacGame(object):
                 if self.cur_action is not None:
                     if time.time() > self.cur_action.start_time + self.cur_action.duration:
                         self.cur_action = None
-                        self.label.text = '...'
                 if self.cur_action is None:
                     try:
                         self.cur_action = self.action_queue.get(block=False)
@@ -106,12 +118,16 @@ class PacGame(object):
                         pass
                     else:
                         self.cur_action.start()
-                        self.label.text = self.cur_action.action
+                        move_x, move_y = self.cur_action.get_move_direction()
+                        if pac_map[self.pac.y+move_y][self.pac.x+move_x] != 'X':
+                            self.pac.x += move_x
+                            self.pac.y += move_y
                 self.window.clear()
                 self.wall_sprites_batch.draw()
                 self.pellets_batch.draw()
-                self.pac_sprite.draw()
-                self.label.draw()
+                self.pac.update(dt)
+                self.pac.sprite.draw()
+                self.score_label.text = 'Score: %d'%self.score
                 self.score_label.draw()
         _game = _PacGame(self.action_queue)
         pyglet.clock.schedule_interval(_game.update, 1./60)
