@@ -119,6 +119,8 @@ class PacGame(object):
                     else:
                         self.cur_action.start()
                         move_x, move_y = self.cur_action.get_move_direction()
+                        move_x *= int(round(2*self.cur_action.duration))
+                        move_y *= int(round(2*self.cur_action.duration))
                         if pac_map[self.pac.y+move_y][self.pac.x+move_x] != 'X':
                             self.pac.x += move_x
                             self.pac.y += move_y
@@ -153,14 +155,14 @@ def runGame():
     _defaultGame.start()
 
 def up():
-    _defaultGame.action_queue.put(PacAction('up', 1.0))
+    _defaultGame.action_queue.put(PacAction('up', .5))
 
 def down():
-    _defaultGame.action_queue.put(PacAction('down', 1.0))
+    _defaultGame.action_queue.put(PacAction('down', .5))
 
 def left():
-    _defaultGame.action_queue.put(PacAction('left', 1.0))
+    _defaultGame.action_queue.put(PacAction('left', .5))
 
 def right():
-    _defaultGame.action_queue.put(PacAction('right', 1.0))
+    _defaultGame.action_queue.put(PacAction('right', .5))
 
