@@ -66,7 +66,8 @@ class PacGame(object):
         self.in_motion_lock = threading.Lock()
 
     def _run(self):
-        from . import gui
+        from . import gui       # NOTE: this imports pyglet, which has
+                                # side-effects and must happen in this thread
         self._game = gui._PacGame(pac_map, self)
         self._game.run()
 
