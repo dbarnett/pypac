@@ -62,8 +62,6 @@ class PacAction(object):
 class PacGame(object):
     def __init__(self):
         self.gui_thread = None
-        self.action_lock = threading.Lock()
-        self.in_motion_lock = threading.Lock()
 
     def _run(self):
         from . import gui       # NOTE: this imports pyglet, which has
@@ -71,17 +69,11 @@ class PacGame(object):
         self._game = gui._PacGame(pac_map, self)
         self._game.run()
 
-    def do_action(self, action):
-        self.action_lock.acquire()
-        for a in action.split():
-            self.in_motion_lock.acquire()
-            self._game.cur_action = a
-            a.start()
-            self.in_motion_lock.release()
-            time.sleep(a.duration)
-            while self._game.cur_action is not None:
-                time.sleep(.001)
-        self.action_lock.release()
+    def do_action(self, direction):
+        self._game.pac.direction_lock.acquire()
+        self._game.pac.direction = direction
+        self._game.advance()
+        self._game.pac.direction_lock.release()
 
     def start(self):
         self.gui_thread = threading.Thread(target=self._run)
@@ -94,14 +86,14 @@ def runGame():
     _default_game.start()
 
 def up():
-    _default_game.do_action(PacAction('up', .5))
+    _default_game.do_action('u')
 
 def down():
-    _default_game.do_action(PacAction('down', .5))
+    _default_game.do_action('d')
 
 def left():
-    _default_game.do_action(PacAction('left', .5))
+    _default_game.do_action('l')
 
 def right():
-    _default_game.do_action(PacAction('right', .5))
+    _default_game.do_action('r')
 
