@@ -23,9 +23,8 @@ class _PacPellet(object):
                 x=self.x*20, y=(30-self.y)*20)
 
 class _PacGame(object):
-    def __init__(self, _map, parent):
+    def __init__(self, _map):
         self.map = _map
-        self.parent = parent
         self.window = pyglet.window.Window(
                 width=28*20, height=31*20)
         self.cur_action = None
@@ -56,7 +55,6 @@ class _PacGame(object):
         pyglet.app.run()
 
     def _update(self, dt):
-        self.parent.in_motion_lock.acquire()
         if self.cur_action is not None:
             dx, dy = self.cur_action.get_move_direction()
             new_x = int(round(self.pac.x + dx*self.cur_action.duration))%len(self.map[0])
@@ -74,7 +72,6 @@ class _PacGame(object):
                         off_pellets.append(p)
                 self.pellets[:] = off_pellets
             self.cur_action = None
-        self.parent.in_motion_lock.release()
         self.window.clear()
         self.wall_sprites_batch.draw()
         self.pellets_batch.draw()

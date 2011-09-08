@@ -1,4 +1,3 @@
-import threading
 import time
 
 _default_game = None
@@ -61,32 +60,24 @@ class PacAction(object):
 
 class PacGame(object):
     def __init__(self):
-        self.gui_thread = None
-        self.action_lock = threading.Lock()
-        self.in_motion_lock = threading.Lock()
-
-    def _run(self):
-        from . import gui       # NOTE: this imports pyglet, which has
-                                # side-effects and must happen in this thread
-        self._game = gui._PacGame(pac_map, self)
-        self._game.run()
+        pass
 
     def do_action(self, action):
-        self.action_lock.acquire()
+        print "Hi"
         for a in action.split():
-            self.in_motion_lock.acquire()
             self._game.cur_action = a
+            print "Start"
             a.start()
-            self.in_motion_lock.release()
             time.sleep(a.duration)
+            print "Waiting for action..."
             while self._game.cur_action is not None:
                 time.sleep(.001)
-        self.action_lock.release()
+            print "Finished waiting for action"
 
     def start(self):
-        self.gui_thread = threading.Thread(target=self._run)
-        self.gui_thread.setDaemon(True)
-        self.gui_thread.start()
+        from . import gui       # NOTE: this imports pyglet, which has
+                                # side-effects and must happen in this thread
+        self._game = gui._PacGame(pac_map)
 
 def runGame():
     global _default_game
@@ -100,6 +91,7 @@ def down():
     _default_game.do_action(PacAction('down', .5))
 
 def left():
+    print "Foo"
     _default_game.do_action(PacAction('left', .5))
 
 def right():

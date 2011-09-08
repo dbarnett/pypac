@@ -4,7 +4,7 @@ setup(
     name = "pypac",
     version = "0.0.9",
     packages=find_packages(),
-    install_requires=['pyglet>=1.1.4'],
+    install_requires=['pyglet>=1.1.4', 'Twisted>=10'],
     extras_require={
     },
     package_data = {},

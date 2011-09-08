@@ -1,11 +1,21 @@
-import __pypac
+import select
 
-up = __pypac.up
-down = __pypac.down
-left = __pypac.left
-right = __pypac.right
+import pygletreactor
+pygletreactor.install()
+from twisted.internet import reactor, stdio
+from twisted.conch.stdio import ConsoleManhole, runWithProtocol
+
+import pyglet
+import __pypac as _pypac
+
+class PacManhole(ConsoleManhole):
+    namespace = {
+        'up':    _pypac.up,
+        'down':  _pypac.down,
+        'left':  _pypac.left,
+        'right': _pypac.right,
+    }
 
 if __name__ == '__main__':
-    __pypac.runGame()
-
-    # fall off to interactive interpreter
+    _pypac.runGame()
+    runWithProtocol(PacManhole)
