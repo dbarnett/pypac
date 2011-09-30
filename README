@@ -22,4 +22,4 @@ How to use it
 -------------
 Execute
 
-    python -i pypac.py
+    python pypac.py
