@@ -1,11 +1,11 @@
-import __pypac
+import _pypac
 
-up = __pypac.up
-down = __pypac.down
-left = __pypac.left
-right = __pypac.right
+up = _pypac.up
+down = _pypac.down
+left = _pypac.left
+right = _pypac.right
 
 if __name__ == '__main__':
-    __pypac.runGame()
+    _pypac.runGame()
 
     # fall off to interactive interpreter
