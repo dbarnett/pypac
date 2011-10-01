@@ -81,6 +81,8 @@ class PacGame(object):
         self.gui_thread.start()
 
     def stop(self):
+        while not hasattr(self, '_game'):
+            pass
         self._game.stop()
         self.gui_thread.join()
 
