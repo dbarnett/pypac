@@ -28,6 +28,7 @@ class _PacPellet(object):
 
 class _PacGame(object):
     def __init__(self, _map, parent):
+        self.keep_running = True
         self.map = _map
         self.parent = parent
         self.game_time = 0.
@@ -61,6 +62,9 @@ class _PacGame(object):
 
     def run(self):
         pyglet.app.run()
+
+    def stop(self):
+        self.keep_running = False
 
     def advance(self, duration=.5):
         self.advance_lock.acquire()
@@ -108,3 +112,5 @@ class _PacGame(object):
         self.score_label.text = 'Score: %d'%self.score
         self.score_label.draw()
 
+        if not self.keep_running:
+            pyglet.app.exit()

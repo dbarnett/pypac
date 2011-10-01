@@ -80,10 +80,18 @@ class PacGame(object):
         self.gui_thread.setDaemon(True)
         self.gui_thread.start()
 
+    def stop(self):
+        self._game.stop()
+        self.gui_thread.join()
+
 def runGame():
     global _default_game
     _default_game = PacGame()
     _default_game.start()
+
+def stopGame():
+    global _default_game
+    _default_game.stop()
 
 def up():
     _default_game.do_action('u')

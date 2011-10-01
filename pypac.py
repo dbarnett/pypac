@@ -14,3 +14,4 @@ class PacManhole(ConsoleManhole):
 if __name__ == '__main__':
     _pypac.runGame()
     runWithProtocol(PacManhole)
+    _pypac.stopGame()
